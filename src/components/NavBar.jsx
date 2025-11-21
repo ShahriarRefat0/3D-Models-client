@@ -1,17 +1,33 @@
 import { Link, NavLink } from "react-router";
 import { IoLogoModelS } from "react-icons/io";
 import { GoHomeFill } from "react-icons/go";
-import { IoLogIn, IoLogOut } from "react-icons/io5";
+import { IoCloudDownloadSharp, IoLogIn, IoLogOut } from "react-icons/io5";
 import { FaGear, FaUser } from "react-icons/fa6";
 import { LuRotate3D } from "react-icons/lu";
 import { ImBoxAdd } from "react-icons/im";
-import { use } from "react";
+import { use, useEffect, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
+import { TbBoxModel } from "react-icons/tb";
 
 const NavBar = () => {
   const { user, signOutUser } = use(AuthContext);
+    const [theme, setTheme] = useState(
+      localStorage.getItem("theme") || "light"
+    );
+
+    useEffect(() => {
+      const html = document.querySelector("html");
+      html.setAttribute("data-theme", theme);
+      localStorage.setItem("theme", theme);
+    }, [theme]);
+
+    const handleTheme = (checked) => {
+      setTheme(checked ? "dark" : "light");
+    };
+
+  
   return (
-    <div className="navbar py-0 min-h-0 z-1 shadow-sm rounded-full glass-card max-w-7xl">
+    <div className="navbar py-0 min-h-0 z-1 shadow-sm rounded-full glass-card max-w-7xl mt-5">
       <div className="navbar-start">
         <div className="dropdown">
           <div tabIndex={0} role="button" className="btn btn-ghost md:hidden">
@@ -111,11 +127,29 @@ const NavBar = () => {
                 </Link>
               </li>
               <li>
-                <a>
-                  {" "}
-                  <FaGear /> Settings
-                </a>
+                <Link to="/myModels">
+                  <TbBoxModel />
+                  My Models
+                </Link>
               </li>
+              <li>
+                <Link to="/myDownloads">
+                  <IoCloudDownloadSharp />
+                  My Downloads
+                </Link>
+              </li>
+              <li>
+                <div className="flex gap-2">
+                  <input
+                    onChange={(e) => handleTheme(e.target.checked)}
+                    type="checkbox"
+                    defaultChecked={localStorage.getItem("theme") === "dark"}
+                    className="toggle"
+                  />
+                  <p>Theme</p>
+                </div>
+              </li>
+
               <li>
                 <button
                   onClick={signOutUser}
